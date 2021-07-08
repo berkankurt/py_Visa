@@ -13,6 +13,7 @@ cikisvolt=str()
 
 dcload_id='USB0::0x0A69::0x087C::63206EL00431::INSTR'
 ac_id='USB0::0x0A69::0x0883::96160900000094::INSTR'
+batload_id='USB0::0x0A69::0x083E::636005004631::INSTR'
 
 path="C:\\Users\\User\\Desktop\\SETUP\\program\\deneme.xlsx"
 wb_obj=openpyxl.load_workbook(path) # belirtilen yerde ki excell aç
@@ -46,9 +47,15 @@ else:
         
 #################################################################################  
         
-if ('ASRL6::INSTR' in usb):
+if (batload_id in usb):
     print("BATARYA YÜK BAĞLANDI")#burada batarya yükü bul
-    batload=rm.open_resource("ASRL6::INSTR")
+    batload=rm.open_resource(batload_id)
+    batload.write("LOAD OFF")
+    batload.write("CONF:PARA:MODE MASTER")
+    batload.write("CONF:PARA:INIT ON")
+    batload.write("MODE CRL")
+    batload.write("CURR:STAT:L2 1")
+    batload.write("LOAD ON")
 else:
     print("BATARYA YÜK BULUNAMADI")
 
@@ -123,5 +130,3 @@ except:
     data["G10"]="TEST HATASI"
     wb_obj.save(filename="C:\\Users\\User\\Desktop\\SETUP\\program\\%s.xlsx"%(seriNo))
         
-
- 
